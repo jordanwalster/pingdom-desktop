@@ -123,10 +123,6 @@ app.on('ready', _ => {
           role: 'help',
           submenu: [
             {
-              label: 'Repository',
-              click () { require('electron').shell.openExternal('https://github.com/jordanwalster/pingdom-desktop') }
-            },
-            {
                 label: 'Reset Pingdom Desktop',
                 click() {
                     const fs = require('fs');
@@ -150,28 +146,35 @@ app.on('ready', _ => {
           label: name,
           submenu: [
             {
-              role: 'about'
+                role: 'about'
             },
             {
-              type: 'separator'
+                type: 'separator'
             },
             {
-              type: 'separator'
+                label: 'Open Repository',
+                click () { require('electron').shell.openExternal('https://github.com/jordanwalster/pingdom-desktop') }
             },
             {
-              role: 'hide'
+                type: 'separator'
             },
             {
-              role: 'hideothers'
+                type: 'separator'
             },
             {
-              role: 'unhide'
+                role: 'hide'
             },
             {
-              type: 'separator'
+                role: 'hideothers'
             },
             {
-              role: 'quit'
+                role: 'unhide'
+            },
+            {
+                type: 'separator'
+            },
+            {
+                role: 'quit'
             }
           ]
         })
