@@ -1,0 +1,114 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
+        <style>
+            body {
+                border: 0;
+                margin: 0;
+                overflow: hidden;
+
+                /* Enable window dragging */
+                -webkit-app-region: drag;
+                -webkit-user-select: none;
+                cursor: default;
+            }
+            .grey {
+                background-color: #282828;
+            } 
+            .yellow {
+                background-color: #FFF000;
+            }
+            .full-height {
+                height: 100vh;
+            }
+
+           input:focus {
+                border: 1px solid #FFF000;
+                outline: 0;
+            }
+
+            .dashboard-svg {
+                width: 300px; 
+                margin-top: 100px;
+                margin-bottom: 70px;
+            }
+
+        </style>
+    </head>
+    <body class="grey">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-4 grey full-height">
+                    <div style="display: table; height: 100vh; width: 100%; overflow: hidden; padding: 20px;">
+                        <div style="display: table-cell; vertical-align: middle;">
+
+                            <form method="post" id="authentication_form">
+                                <div class="form-group">
+                                    <label class="text-white" for="api_key">API Key</label>
+                                    <input type="password" class="form-control" id="api_key" placeholder="1234567890abcdef1234567890abcdef">
+                                </div>
+                                <button type="submit" class="btn yellow" id="connect">Connect to Pingdom</button>
+                            </form>
+
+                        </div>
+                    </div>
+                    <span style="font-size: 10px; bottom: 10px; position:absolute; left: 10px; color: #ddd;" id="version"></span>
+                </div>
+                <div class="col-8 yellow full-height welcome-rounded text-center">
+                    <img src="assets/img/pingdom.svg" class="dashboard-svg">
+                    <h2>Hi!</h2>
+                    <hr style="width: 100px">
+                    <h3 class="font-weight-lighter">This app uses the Pingdom API in order to serve a dynamic dashboard of your site response time.</h3>
+                    <span style="font-size: 10px; bottom: 10px; position:absolute; right: 10px;">Pindom Desktop is licensed under the MIT License. All logo and brand copyrights go to SolarWinds</span>
+                    <img src="assets/img/dashboard.svg" style="width: 400px;">
+                </div>  
+            </div>
+        </div>
+
+        <!-- Store data JavaScript -->
+        <script>
+            document.getElementById("authentication_form").onsubmit = function() {
+
+                const fs = require('fs');
+
+                let user_data = {
+                    "WELCOME_STATUS": 1,
+                    "API_KEY": document.getElementById("api_key").value
+                };
+ 
+                let data = JSON.stringify(user_data);
+                fs.writeFileSync(`${__dirname}/../data/user_data.json`, data);
+
+                connectToPingdom();
+                
+            };
+
+            function connectToPingdom() {
+                const remote = require('electron').remote;
+                const BrowserWindow = remote.BrowserWindow;
+                const win = new BrowserWindow({
+                    height: 600,
+                    width: 800,
+                    backgroundColor: '#2c2c2c',
+                    titleBarStyle: 'hidden'
+                });
+
+                win.loadURL(`file://${__dirname}/index.html`);
+
+                var window = remote.getCurrentWindow();
+                window.close(); 
+            }
+
+            
+
+            const rev = fs.readFileSync('.git/HEAD').toString();
+            if (rev.indexOf(':') === -1) {
+                document.getElementById("version").innerHTML = rev;
+            } else {
+                document.getElementById("version").innerHTML = fs.readFileSync('.git/' + rev.substring(5)).toString();
+            }
+        
+        </script>
+
+    </body>
+</html>
