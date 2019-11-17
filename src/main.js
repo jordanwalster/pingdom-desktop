@@ -4,32 +4,6 @@ const fs = require('fs');
 let rawdata = fs.readFileSync(`${__dirname}/../data/user_data.json`);
 let user_data = JSON.parse(rawdata);
 
-// const https = require('https')
-// const options = {
-//   hostname: 'api.pingdom.com',
-//   path: '/api/3.1/checks',
-//   method: 'GET',
-//   headers: {
-//     'Authorization': 'Bearer ' + user_data["API_KEY"]
-//   }
-// }
-
-
-// const req = https.request(options, (res) => {
-//   console.log(`statusCode: ${res.statusCode}`)
-
-//   res.on('data', (d) => {
-//     site_data = d
-//   })
-// })
-
-// req.on('error', (error) => {
-//   console.error(error)
-// })
-
-// req.end()
-
-
 
 app.on('ready', _ => {
     
@@ -157,10 +131,7 @@ app.on('ready', _ => {
                 click() {
                     const fs = require('fs');
 
-                    let default_data = {
-                        "WELCOME_STATUS": 0,
-                        "API_KEY":  ""
-                    };
+                    let default_data = {"WELCOME_STATUS": 0, "API_KEY": ""};
     
                     let data = JSON.stringify(default_data);
                     fs.writeFileSync(`${__dirname}/../data/user_data.json`, data);

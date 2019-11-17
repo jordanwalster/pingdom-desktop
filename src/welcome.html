@@ -45,7 +45,8 @@
                             <form method="post" id="authentication_form">
                                 <div class="form-group">
                                     <label class="text-white" for="api_key">API Key</label>
-                                    <input type="password" class="form-control" id="api_key" placeholder="1234567890abcdef1234567890abcdef">
+                                    <input type="password" class="form-control" id="api_key" required placeholder="1234567890abcdef1234567890abcdef">
+                                    <small id="api_key_smalltext" class="form-text text-muted">Your API key is stored locally.</small>
                                 </div>
                                 <button type="submit" class="btn yellow" id="connect">Connect to Pingdom</button>
                             </form>
@@ -68,7 +69,6 @@
         <!-- Store data JavaScript -->
         <script>
             document.getElementById("authentication_form").onsubmit = function() {
-
                 const fs = require('fs');
 
                 let user_data = {
@@ -89,6 +89,7 @@
                 const win = new BrowserWindow({
                     height: 600,
                     width: 800,
+                    fullscreenable: false,
                     backgroundColor: '#2c2c2c',
                     titleBarStyle: 'hidden'
                 });
@@ -97,15 +98,6 @@
 
                 var window = remote.getCurrentWindow();
                 window.close(); 
-            }
-
-            
-
-            const rev = fs.readFileSync('.git/HEAD').toString();
-            if (rev.indexOf(':') === -1) {
-                document.getElementById("version").innerHTML = rev;
-            } else {
-                document.getElementById("version").innerHTML = fs.readFileSync('.git/' + rev.substring(5)).toString();
             }
         
         </script>
