@@ -1,18 +1,17 @@
 <html>
     <head>
+        <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
 
         <style>
             body {
                 border: 0;
                 margin: 0;
                 overflow: hidden;
+                background-color: #333333;
 
-                /* Enable window dragging */
-                -webkit-app-region: drag;
-            }
+                cursor: unet;
 
-            .app-bar {
-                /* prevent title bar highlighting. */
+                /* Disable text selection across the whole app */
                 -webkit-touch-callout: none;
                 -webkit-user-select: none;
                 -khtml-user-select: none; 
@@ -20,8 +19,14 @@
                 -ms-user-select: none;
                 user-select: none;
 
+            }
+
+            .app-bar {
+                /* Enable window dragging */
+                -webkit-app-region: drag;
+
                 /* Set the general styling for the title bar */
-                height: 18px; 
+                height: 22px; 
                 width: 100%; 
                 padding-top: 3px; 
                 text-align: center; 
@@ -29,45 +34,119 @@
                 font-family: Arial, Helvetica, sans-serif;  
                 position: fixed;
                 top: 0;    
-                background-color: #222222;
+                background-color: #1f1f1f;
                 color: #acacac; 
             }
 
+            .top-gutter  {
+                margin-top: 50px;
+            }
+
+            .bg-up {
+                background-color: #11d15c;
+            }
+
+            .bg-warn {
+                background-color: #F99E1D;
+            }
+
+            .bg-down {
+                background-color: #d11126;
+            }
         </style>
     </head>
     <body>
         <div class="app-bar">Pingdom Desktop</div>
-        <!-- <webview src="http://jrdn.dev/fdsdf" style="padding-top: 18px; border: none; width: 100%; height: 100%;"></webview> -->
+
+        <div class="container-fluid top-gutter">
+            <div class="row" id="tile_div">
+            </div>
+        </div>
+
+        
 
         <script>
+
         
-        const fs = require('fs');
-        let rawdata = fs.readFileSync(`${__dirname}/../data/user_data.json`);
-        let user_data = JSON.parse(rawdata);
 
-        const https = require('https')
-        const options = {
-        hostname: 'api.pingdom.com',
-        path: '/api/3.1/checks',
-        method: 'GET',
-        headers: {
-            'Authorization': 'Bearer ' + user_data["API_KEY"]
-        }
-        }
+        function checkSites(){
+            var data_string;
 
-        const req = https.request(options, (res) => {
-            console.log(`statusCode: ${res.statusCode}`)
+            const fs = require('fs');
+            let rawdata = fs.readFileSync(`${__dirname}/../data/user_data.json`);
+            let user_data = JSON.parse(rawdata);
 
-            res.on('data', (d) => {
-                process.stdout.write(d)
+            const https = require('https')
+            const options = {
+                hostname: 'api.pingdom.com',
+                path: '/api/3.1/checks',
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + user_data["API_KEY"]
+                }
+            }
+
+            const req = https.request(options, (res) => {
+                console.log(`statusCode: ${res.statusCode}`)
+
+                res.on('data', (d) => {
+
+
+                    d += d.toString()
+
+                    d = JSON.stringify(d);
+
+                    d = JSON.parse(d);
+
+                    console.log(d[0]);
+                                   
+
+                    // for(x in data[0]["checks"]){
+                
+                    //     alert("jadhjkfd");
+
+                    //     if(data[0]["checks"][x]["status"] == "down"){
+                    //         var color = "bg-down";
+                    //     } else if(data[0]["checks"][x]["status"] == "up"){
+                    //         if(data[0]["checks"][x]["lastresponsetime"] > 500){
+                    //             var color = "bg-warn";
+                    //         } else {
+                    //             var color = "bg-up";
+                    //         }
+                    //     }
+
+                    //     document.getElementById("tile_div").innerHTML += '\
+                    //     <div class="col-lg-3 col-md-4 mb-4"> \
+                    //         <div class="card ' + color + ' text-white shadow"> <div class="card-body"> \
+                    //         <strong>' + data[0]["checks"][x]["name"] + '</strong> \
+                    //         <div class="text-white small">Response time: 18092ms </div>\
+                    //     </div></div></div>'
+
+                    // }
+
+                })
             })
-        })
 
-        req.on('error', (error) => {
-            console.error(error)
-        })
+            req.on('error', (error) => {
+                process.stdout.write(error)
+            })
 
-        req.end()
+            req.end()
+
+
+            // document.getElementById("tile_div").innerHTML = test_site_data[0]["checks"][0]["name"];
+
+        }
+
+        checkSites();
+
+        
+
+
+        // // Check for site updates every 30 seconds.
+        // setInterval(checkSites, 30000);
+
+        
 
         </script>
     </body>
