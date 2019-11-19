@@ -44,18 +44,6 @@
                 margin-top: 50px;
             }
 
-            .bg-up {
-                background-color: #11d15c;
-            }
-
-            .bg-warn {
-                background-color: #F99E1D;
-            }
-
-            .bg-down {
-                background-color: #d11126;
-            }
-
         </style>
     </head>
     <body>
@@ -67,7 +55,6 @@
         </div>
 
         
-
         <script>
 
         var data_string;
@@ -99,7 +86,13 @@
                     data_string = '[' + data_string + ']';
                     data_string = JSON.parse(data_string)
                     
-                    displayDashboard(JSON.stringify(data_string))
+                    displayDashboard(
+                        JSON.stringify(data_string),
+                        user_data["DASHBOARD_PREFERENCES"][0]["WARN_RESPONSE_TIME"],
+                        user_data["DASHBOARD_PREFERENCES"][0]["COLOR_GOOD"], 
+                        user_data["DASHBOARD_PREFERENCES"][0]["COLOR_WARN"], 
+                        user_data["DASHBOARD_PREFERENCES"][0]["COLOR_DOWN"]
+                    );
                 })
                 
             })
@@ -114,21 +107,21 @@
         }
 
     
-        function displayDashboard(data){
+        function displayDashboard(data, warn_on_time, color_good, color_warn, color_down){
 
             data = JSON.parse(data);
 
             for(x in data[0]["checks"]){  
 
                 if(data[0]["checks"][x]["status"] == "down"){
-                    var color = "bg-down";
+                    var color = color_down;
                     display = 1;
                 } else if(data[0]["checks"][x]["status"] == "up"){
-                    if(data[0]["checks"][x]["lastresponsetime"] > 1000){
-                        var color = "bg-warn";
+                    if(data[0]["checks"][x]["lastresponsetime"] > warn_on_time){
+                        var color = color_warn;
                         display = 1;
                     } else {
-                        var color = "bg-success";
+                        var color = color_good;
                         display = 1;
                     }
                 } else {
@@ -138,7 +131,7 @@
                 if(display !== 0){
                     document.getElementById("tile_div").innerHTML += '\
                     <div class="col-lg-3 col-md-4 mb-4"> \
-                        <div class="card ' + color + ' text-white shadow"> <div class="card-body"> \
+                        <div class="card text-white shadow" style="background-color:' + color + '"> <div class="card-body"> \
                         <strong>' + data[0]["checks"][x]["name"] + '</strong> \
                         <div class="text-white small">Response time: ' + data[0]["checks"][x]["lastresponsetime"] +'ms </div>\
                     </div></div></div>'

@@ -1,1 +1,12 @@
-{"WELCOME_STATUS":0,"API_KEY":""}
+{
+    "WELCOME_STATUS":0,
+    "API_KEY":"",
+    "DASHBOARD_PREFERENCES": [
+        {
+            "WARN_RESPONSE_TIME": 2000,
+            "COLOR_GOOD": "#11D15C",
+            "COLOR_WARN": "#F99E1D",
+            "COLOR_DOWN": "#D11126"
+        }
+    ]
+}
