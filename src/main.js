@@ -26,6 +26,7 @@ app.on('ready', _ => {
             loginWindow.show()
         })
     } else {
+
         const mainWindow = new BrowserWindow({
             height: 600,
             width: 800,
@@ -36,6 +37,7 @@ app.on('ready', _ => {
         });
 
         mainWindow.loadURL(`file://${__dirname}/index.html`);
+
     }
 
     app.on('window-all-closed', () => {
@@ -45,7 +47,7 @@ app.on('ready', _ => {
 
     // Menu settings
 
-    const template = [
+    const menuTemplate = [
         {
           label: 'Edit',
           submenu: [
@@ -135,12 +137,21 @@ app.on('ready', _ => {
                     app.relaunch();
                     app.quit();
                 }
+            },
+            {
+              label: 'Edit Preferences',
+              click() {
+                  const shell = require('electron').shell;
+                  const path = require('path');
+
+                  shell.openItem(`${__dirname}/../data/user_data.json`);
+              }
             }
           ]
         }
-      ]
+    ]
       
-      if (process.platform === 'darwin') {
+    if (process.platform === 'darwin') {
         const name = app.getName()
         template.unshift({
           label: name,
@@ -219,8 +230,8 @@ app.on('ready', _ => {
             role: 'front'
           }
         ]
-      }
+    }
       
-      const menu = Menu.buildFromTemplate(template)
-      Menu.setApplicationMenu(menu)
+    const menu = Menu.buildFromTemplate(menuTemplate)
+    Menu.setApplicationMenu(menu)
 })
