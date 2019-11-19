@@ -129,7 +129,18 @@ app.on('ready', _ => {
                 click() {
                     const fs = require('fs');
 
-                    let default_data = {"WELCOME_STATUS": 0, "API_KEY": ""};
+                    let default_data = {
+                      "WELCOME_STATUS":0,
+                      "API_KEY":"",
+                      "DASHBOARD_PREFERENCES": [
+                          {
+                              "WARN_RESPONSE_TIME": 2000,
+                              "COLOR_GOOD": "#11D15C",
+                              "COLOR_WARN": "#F99E1D",
+                              "COLOR_DOWN": "#D11126"
+                          }
+                      ]
+                  };
     
                     let data = JSON.stringify(default_data);
                     fs.writeFileSync(`${__dirname}/../data/user_data.json`, data);
