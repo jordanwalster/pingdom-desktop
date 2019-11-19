@@ -6,7 +6,6 @@
             body {
                 border: 0;
                 margin: 0;
-                overflow: hidden;
                 background-color: #333333;
 
                 cursor: unet;
@@ -22,6 +21,9 @@
             }
 
             .app-bar {
+
+                z-index: 5;
+
                 /* Enable window dragging */
                 -webkit-app-region: drag;
 
@@ -53,6 +55,7 @@
             .bg-down {
                 background-color: #d11126;
             }
+
         </style>
     </head>
     <body>
@@ -67,11 +70,9 @@
 
         <script>
 
-        
+        var data_string;
 
         function checkSites(){
-            var data_string;
-
             const fs = require('fs');
             let rawdata = fs.readFileSync(`${__dirname}/../data/user_data.json`);
             let user_data = JSON.parse(rawdata);
@@ -87,64 +88,71 @@
             }
 
             const req = https.request(options, (res) => {
-                console.log(`statusCode: ${res.statusCode}`)
 
-                res.on('data', (d) => {
+                res.on('data', function(chunk){
+                    data_string += chunk;
+                });
 
-
-                    d += d.toString()
-
-                    d = JSON.stringify(d);
-
-                    d = JSON.parse(d);
-
-                    console.log(d[0]);
-                                   
-
-                    // for(x in data[0]["checks"]){
-                
-                    //     alert("jadhjkfd");
-
-                    //     if(data[0]["checks"][x]["status"] == "down"){
-                    //         var color = "bg-down";
-                    //     } else if(data[0]["checks"][x]["status"] == "up"){
-                    //         if(data[0]["checks"][x]["lastresponsetime"] > 500){
-                    //             var color = "bg-warn";
-                    //         } else {
-                    //             var color = "bg-up";
-                    //         }
-                    //     }
-
-                    //     document.getElementById("tile_div").innerHTML += '\
-                    //     <div class="col-lg-3 col-md-4 mb-4"> \
-                    //         <div class="card ' + color + ' text-white shadow"> <div class="card-body"> \
-                    //         <strong>' + data[0]["checks"][x]["name"] + '</strong> \
-                    //         <div class="text-white small">Response time: 18092ms </div>\
-                    //     </div></div></div>'
-
-                    // }
-
+                res.on('end', function(){
+                    // console.log(req.data);
+                    data_string = data_string.replace("undefined", "");
+                    data_string = '[' + data_string + ']';
+                    data_string = JSON.parse(data_string)
+                    
+                    displayDashboard(JSON.stringify(data_string))
                 })
+                
             })
 
+            
             req.on('error', (error) => {
                 process.stdout.write(error)
             })
 
             req.end()
 
-
-            // document.getElementById("tile_div").innerHTML = test_site_data[0]["checks"][0]["name"];
-
         }
 
+    
+        function displayDashboard(data){
+
+            data = JSON.parse(data);
+
+            for(x in data[0]["checks"]){  
+
+                if(data[0]["checks"][x]["status"] == "down"){
+                    var color = "bg-down";
+                    display = 1;
+                } else if(data[0]["checks"][x]["status"] == "up"){
+                    if(data[0]["checks"][x]["lastresponsetime"] > 1000){
+                        var color = "bg-warn";
+                        display = 1;
+                    } else {
+                        var color = "bg-success";
+                        display = 1;
+                    }
+                } else {
+                    display = 0;
+                }
+
+                if(display !== 0){
+                    document.getElementById("tile_div").innerHTML += '\
+                    <div class="col-lg-3 col-md-4 mb-4"> \
+                        <div class="card ' + color + ' text-white shadow"> <div class="card-body"> \
+                        <strong>' + data[0]["checks"][x]["name"] + '</strong> \
+                        <div class="text-white small">Response time: ' + data[0]["checks"][x]["lastresponsetime"] +'ms </div>\
+                    </div></div></div>'
+                }
+                
+
+            }
+        }
+
+        // On load run checkSites function.
         checkSites();
 
-        
-
-
-        // // Check for site updates every 30 seconds.
-        // setInterval(checkSites, 30000);
+        // Check for site updates every 30 seconds.
+        setInterval(checkSites, 30000);
 
         
 
