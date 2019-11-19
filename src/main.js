@@ -153,7 +153,7 @@ app.on('ready', _ => {
       
     if (process.platform === 'darwin') {
         const name = app.getName()
-        template.unshift({
+        menuTemplate.unshift({
           label: name,
           submenu: [
             {
@@ -190,7 +190,7 @@ app.on('ready', _ => {
           ]
         })
         // Edit menu.
-        template[1].submenu.push(
+        menuTemplate[1].submenu.push(
           {
             type: 'separator'
           },
@@ -207,7 +207,7 @@ app.on('ready', _ => {
           }
         )
         // Window menu.
-        template[3].submenu = [
+        menuTemplate[3].submenu = [
           {
             label: 'Close',
             accelerator: 'CmdOrCtrl+W',
