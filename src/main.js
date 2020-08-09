@@ -29,7 +29,7 @@ app.on('ready', _ => {
 
         const mainWindow = new BrowserWindow({
             height: 600,
-            width: 800,
+            width: 435,
             minWidth: 300,
             fullscreenable: false,
             backgroundColor: '#2c2c2c',
